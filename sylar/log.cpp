@@ -78,6 +78,25 @@ namespace sylar
     {
     }
 
+    void LogEvent::format(const char *fmt, ...)
+    {
+        va_list al;
+        va_start(al, fmt);
+        format(fmt, al);
+        va_end(al);
+    }
+
+    void LogEvent::format(const char *fmt, va_list al)
+    {
+        char *buf = nullptr;
+        int len = vasprintf(&buf, fmt, al);
+        if (len != -1)
+        {
+            m_ss << std::string(buf, len);
+            free(buf);
+        }
+    }
+
     LogEventWrap::LogEventWrap(LogEvent::ptr e)
         : m_event(e)
     {
@@ -385,7 +404,7 @@ namespace sylar
         {
             m_filestream.close();
         }
-        m_filestream.open(m_filename);
+        m_filestream.open(m_filename, std::ios_base::app);
         return !!m_filestream;
     }
 
@@ -545,6 +564,37 @@ namespace sylar
             // std::cout << "(" << std::get<0>(i) << ") - (" << std::get<1>(i) << ") - (" << std::get<2>(i) << ")" << std::endl;
         }
         // std::cout << m_items.size() << std::endl;
+    }
+
+    /*******
+     *
+     * LoggerManager
+     *
+     ********/
+
+    LoggerManager::LoggerManager()
+    {
+        m_root.reset(new Logger);
+        m_root->addAppender(LogAppender::ptr(new StdoutLogAppender));
+
+        // m_loggers[m_root->m_name] = m_root;
+
+        // init();
+    }
+
+    Logger::ptr LoggerManager::getLogger(const std::string &name)
+    {
+        auto it = m_loggers.find(name);
+        if (it != m_loggers.end())
+        {
+            return it->second;
+        }
+
+        return it == m_loggers.end() ? m_root : it->second;
+        // Logger::ptr logger(new Logger(name));
+        // logger->m_root = m_root;
+        // m_loggers[name] = logger;
+        // return logger;
     }
 
 }

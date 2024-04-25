@@ -11,6 +11,8 @@
 #include <stdarg.h>
 #include <map>
 
+#include"singleton.h"
+
 #define SYLAR_LOG_LEVEL(logger, level)                                                                                       \
     if (logger->getLevel() <= level)                                                                                         \
     sylar::LogEventWrap(sylar::LogEvent::ptr(new sylar::LogEvent(logger, level, __FILE__, __LINE__, 0, sylar::GetThreadId(), \
@@ -22,6 +24,19 @@
 #define SYLAR_LOG_WARN(logger) SYLAR_LOG_LEVEL(logger, sylar::LogLevel::WARN)
 #define SYLAR_LOG_ERROR(logger) SYLAR_LOG_LEVEL(logger, sylar::LogLevel::ERROR)
 #define SYLAR_LOG_FATAL(logger) SYLAR_LOG_LEVEL(logger, sylar::LogLevel::FATAL)
+
+#define SYLAR_LOG_FMT_LEVEL(logger, level, fmt, ...)                                                                         \
+    if (logger->getLevel() <= level)                                                                                         \
+    sylar::LogEventWrap(sylar::LogEvent::ptr(new sylar::LogEvent(logger, level, __FILE__, __LINE__, 0, sylar::GetThreadId(), \
+                                                                 sylar::GetFiberId(), time(0))))                             \
+        .getEvent()                                                                                                          \
+        ->format(fmt, __VA_ARGS__)
+
+#define SYLAR_LOG_FMT_DEBUG(logger, fmt, ...) SYLAR_LOG_FMT_LEVEL(logger, sylar::LogLevel::DEBUG, fmt, __VA_ARGS__)
+#define SYLAR_LOG_FMT_INFO(logger, fmt, ...) SYLAR_LOG_FMT_LEVEL(logger, sylar::LogLevel::INFO, fmt, __VA_ARGS__)
+#define SYLAR_LOG_FMT_WARN(logger, fmt, ...) SYLAR_LOG_FMT_LEVEL(logger, sylar::LogLevel::WARN, fmt, __VA_ARGS__)
+#define SYLAR_LOG_FMT_ERROR(logger, fmt, ...) SYLAR_LOG_FMT_LEVEL(logger, sylar::LogLevel::ERROR, fmt, __VA_ARGS__)
+#define SYLAR_LOG_FMT_FATAL(logger, fmt, ...) SYLAR_LOG_FMT_LEVEL(logger, sylar::LogLevel::FATAL, fmt, __VA_ARGS__)
 
 namespace sylar
 {
@@ -73,8 +88,8 @@ namespace sylar
 
         std::stringstream &getss() { return m_ss; }
 
-        // void format(const char *fmt, ...);
-        // void format(const char *fmt, va_list al);
+        void format(const char *fmt, ...);
+        void format(const char *fmt, va_list al);
 
     private:
         /// 文件名
@@ -237,5 +252,36 @@ namespace sylar
         /// 上次重新打开时间
         uint64_t m_lastTime = 0;
     };
+
+    /*******
+     *
+     * LoggerManager
+     *
+     ********/
+
+    class LoggerManager
+    {
+    public:
+        LoggerManager();
+
+        Logger::ptr getLogger(const std::string &name);
+
+        void init();
+
+        Logger::ptr getRoot() const { return m_root; }
+
+        std::string toYamlString();
+
+    private:
+        /// 日志器容器
+        std::map<std::string, Logger::ptr> m_loggers;
+        /// 主日志器
+        Logger::ptr m_root;
+    };
+
+    /// 日志器管理类单例模式
+    typedef sylar::Singleton<LoggerManager> LoggerMgr;
+
 }
+
 #endif
