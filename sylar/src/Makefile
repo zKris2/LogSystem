@@ -61,4 +61,4 @@ $(TARGET): $(OBJ)
 
 .PHONY: clean
 clean: 
-	rm -rf ../lib/*.o $(TARGET)
+	rm -rf ../lib/*.o ../bin/$(TARGET)
