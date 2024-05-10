@@ -4,7 +4,7 @@ TARGET = test
 SRC = $(wildcard,*.cpp)
 OBJ = $(patsubst %.cpp, %.o,$(SRC))
 
-CXXFLAGS = -c -Wall -std=c++11
+CXXFLAGS = -c -Wall -std=c++11 -g
 
 $(TARGET): $(OBJ)
 	$(CXX) test_config.cpp -o $@ -std=c++11 -lyaml-cpp

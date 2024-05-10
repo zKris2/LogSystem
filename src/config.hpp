@@ -319,7 +319,7 @@ namespace sylar
             catch (std::exception &e)
             {
                 SYLAR_LOG_ERROR(SYLAR_LOG_ROOT()) << "ConfigVar::toString exception"
-                                                  << e.what() << " convert: " << typeid(m_val).name() << " to string";
+                                                  << e.what() << " convert: " << typeid(m_val).name() << " - " << val;
             }
             return false;
         }
@@ -354,7 +354,7 @@ namespace sylar
 
                     SYLAR_LOG_ERROR(SYLAR_LOG_ROOT()) << "Lookup name " << name << " exits but type not "
                                                       << typeid(T).name() << " real_type = " << it->second->getTypeName()
-                                                      << " " 
+                                                      << " "
                                                       << it->second->toString();
                     return nullptr;
                 }
