@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/sylar.dir/src/main.cpp.o  -o bin/sylar  src/libsrc.a 

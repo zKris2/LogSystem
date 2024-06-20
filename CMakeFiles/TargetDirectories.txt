@@ -1,0 +1,6 @@
+/home/zsh/workspace/sylar/CMakeFiles/rebuild_cache.dir
+/home/zsh/workspace/sylar/CMakeFiles/edit_cache.dir
+/home/zsh/workspace/sylar/CMakeFiles/sylar.dir
+/home/zsh/workspace/sylar/src/CMakeFiles/rebuild_cache.dir
+/home/zsh/workspace/sylar/src/CMakeFiles/edit_cache.dir
+/home/zsh/workspace/sylar/src/CMakeFiles/src.dir

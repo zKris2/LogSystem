@@ -1,0 +1,2 @@
+/usr/bin/ar qc libsrc.a  CMakeFiles/src.dir/config.cpp.o CMakeFiles/src.dir/log.cpp.o CMakeFiles/src.dir/main.cpp.o CMakeFiles/src.dir/util.cpp.o
+/usr/bin/ranlib libsrc.a
